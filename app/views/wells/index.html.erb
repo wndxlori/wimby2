@@ -1,0 +1,23 @@
+<h1>Listing wells</h1>
+
+<table>
+  <tr>
+    <th>UWI</th>
+    <th>Name</th>
+    <th></th>
+  </tr>
+
+<% @wells.each do |well| %>
+  <tr>
+    <td><%= well.uwi %></td>
+  </tr>
+  <tr>
+    <td><%= well.well_name %></td>
+  </tr>
+  <tr>
+    <td><%= link_to 'Show', well %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />

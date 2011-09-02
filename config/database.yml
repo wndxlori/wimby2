@@ -1,0 +1,6 @@
+development:
+  adapter: oracle_enhanced
+  database: xe
+  username: ihstest
+  password: ihs123
+
