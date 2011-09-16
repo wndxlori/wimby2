@@ -1,0 +1,132 @@
+/* 
+    Document   : wimby
+    Created on : Jun 4, 2010, 10:22:18 AM
+    Author     : lori
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+/* 
+   TODO customize this sample style
+   Syntax recommendation http://www.w3.org/TR/REC-CSS2/
+*/
+
+root { 
+    display: block;
+}
+
+html, body, #map {width:100%;height:100%;margin:0;padding:0}
+#map {height: 100%; width: 100%; position: relative; background-color: rgb(229, 227, 223); overflow: hidden; z-index: 0;}
+
+/* ipad-y stuff */
+.toolbar {background: url(toolbar.png) #6d84a2 repeat-x; border-bottom: 1px solid #2d3642;height: 43px;font-family:Helvetica;}
+.button {
+    float: left;
+    -webkit-border-image: url(toolButton.png) 0 5 0 5;
+    -webkit-border-radius: 0;
+    -moz-border-image: url(toolButton.png) 0 5 0 5;
+    -moz-border-radius: 0;
+    border-width: 0 5px 0 5px;
+    padding: 0;
+    height: 30px;
+    line-height: 30px;
+    font-size: 12px;
+    font-weight: bold;
+    color: #fff;
+    text-shadow: rgba(0, 0, 0, 0.6) 0px -1px 0;
+    text-align: center;
+    text-decoration: none;
+    background: none;
+    cursor: default;
+}
+.button.left {border-width: 0px 0px 0px 5px;padding-right: 4px;}
+.button.center {border-width: 0 0 0 1px;padding: 0 5px 0 4px;}
+.button.right {border-width: 0 5px 0 1px;padding-left: 4px;}
+.button1 {
+    float: left;
+    margin-left:10px;
+    margin-right:8px;
+    -webkit-border-image: url(toolButton.png) 0 5 0 5;
+    -webkit-border-radius: 0;
+    -moz-border-image: url(toolButton.png) 0 5 0 5;
+    -moz-border-radius: 0;
+    border-width: 0 5px 0 5px;
+    padding: 0;
+    height: 25px;
+    line-height: 25px;
+    font-size: 12px;
+    font-weight: bold;
+    color: #fff;
+    text-shadow: rgba(0, 0, 0, 0.6) 0px -1px 0;
+    text-align: center;
+    text-decoration: none;
+    background: none;
+    cursor: default;
+}
+.button1.right {border-width: 0 5px 0 1px;padding-left: 4px;}
+.toolinput, .toolfeedback {border-width: 5px 5px 0 5px; padding: 0; height: 30px; line-height: 30px; font-size: 12px; font-weight: bold; color: #fff; text-shadow: rgba(0, 0, 0, 0.6) 0px -1px 0; text-align: center; text-decoration: none; background: none;cursor: default;}
+.toolinput {float: left; margin-left: 10px;}
+.toolfeedback {float: right; width: auto; text-align: left; margin-left: 10px;}
+#mb {padding: 8px 10px 7px 10px;}
+#nb, #sb {float: right;}
+#nb .button {width: 40px;}
+#nb .button.icon {width: 20px;}
+#nb .button1 {width: 85px;}
+#hb {float: left;}
+#hb .button {width: 55px;}
+#hb .toolinput {float: left;}
+#sb .button {width: 24px; margin-left: 5px;}
+
+img.social {
+    text-decoration: none; 
+    border-style: none;
+    margin-top: 1px;
+    height:85%;
+}
+img.busy {top: 5px;}
+
+#co-wrapper {
+    min-width: 780px;
+    margin:0;
+    width:expression(document.body.clientWidth < 550 ? "550px" : "100%" );
+}
+#masthead {
+    background-image: url(mh-10.gif);
+    background-repeat: repeat-x;
+    /*width: 100%;*/
+    height: 50px;
+    min-height: 50px;
+    max-height: 50px;
+}
+.title {
+    display: inline-block;
+    width: 40%;
+    margin: 20px;
+    font-size: 16px;
+    color: #EDECB7;
+    text-align: center;
+    text-decoration: none;
+    background: none;
+    height: 50px;
+    min-height: 50px;
+    max-height: 50px;
+}
+#mastail { 
+    background-image: url(vendor-logo-transparent-halo.png);
+    background-repeat: no-repeat;
+    background-position: top right;
+    width: 150px;
+    height: 50px;
+    min-height: 50px;
+    float: right;
+}
+#logo-nav {
+    background-image: url(mh-00.gif);
+    background-repeat: no-repeat;
+    min-width: 161px;
+    height: 50px;
+    min-height: 50px;
+    float: left;
+    padding: 0;
+    margin: 0;
+}

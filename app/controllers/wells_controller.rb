@@ -1,8 +1,7 @@
 class WellsController < ApplicationController
 
-
   def map
-
+    render layout: 'map'
   end
 
   # GET /wells

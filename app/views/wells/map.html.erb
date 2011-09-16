@@ -1,0 +1,32 @@
+<div class="toolbar">
+    <div id="mb">
+        <div id="hb">
+            <div class="button" onclick="location=' /'">Start</div>
+            <div class="toolfeedback">Use "Locate" or click on map to place marker</div>
+        </div>
+        <div id="nb">
+            <div class="button left" onclick="map.setMapTypeId(google.maps.MapTypeId.ROADMAP);">Road</div>
+            <div class="button center" onclick="map.setMapTypeId(google.maps.MapTypeId.HYBRID);">Hybrid</div>
+            <div class="button right" onclick="map.setMapTypeId(google.maps.MapTypeId.TERRAIN);">Terrain</div>
+        </div>
+    </div>
+</div>
+<div id='map'>Loading...</div>
+<div class="toolbar">
+    <div id="mb">
+        <div id="hb">
+            <div class="button" onclick="locateMyBackYard()">Locate</div>
+            <div class="toolinput">
+              Abandoned Wells Within&nbsp;
+              <%= select_tag("radiusInput", options_for_select([1,2,3,4,5,6,7,8,9,10], 2), :onchange => 'setRadius()') %> km of
+              <%= text_field_tag("geolocInput", nil, :size => 30, :onblur => "enterMyBackYard()" ) %>
+              <%= check_box_tag("bubblesCheck", 'true', false, :onchange => 'setBubbles()') %>
+              <%= label_tag("bubblesLabel", 'Show bubbles') %>
+            </div>
+        </div>
+        <div id="sb">
+          <div class="button" onclick="socialLink('twitter');" title="Click to share this page on Facebook" ><%= image_tag("facebook.png", :class => 'social')  %> </div>
+          <div class="button" onclick="socialLink('facebook');" title="Click to share this page on Twitter" ><%= image_tag("twitter.png", :class => 'social')  %></div>
+        </div>
+    </div>
+</div>
