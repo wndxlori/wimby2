@@ -24,7 +24,7 @@ var WebMap = {
           mapTypeId: GM.MapTypeId.ROADMAP,
           zoom: 5,
           center: new GM.LatLng(54.41893,-111.181641),
-          minZoom: 3,
+          minZoom: 4,
           maxZoom: 16,
           mapTypeControl: true,
           mapTypeControlOptions: {
