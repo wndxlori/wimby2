@@ -86,7 +86,7 @@ var WebMap = {
           }
           else
           {
-          var maph = (divh - 138).toString() + 'px';
+          var maph = (divh - 96).toString() + 'px';
           mapdiv.style.height = maph;
           }
 
