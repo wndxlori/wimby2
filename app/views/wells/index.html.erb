@@ -4,18 +4,21 @@
   <tr>
     <th>UWI</th>
     <th>Name</th>
-    <th></th>
+    <th>Count</th>
   </tr>
 
 <% @wells.each do |well| %>
   <tr>
-    <td><%= well.uwi %></td>
+    <td><%= well.i %></td>
   </tr>
   <tr>
-    <td><%= well.well_name %></td>
+    <td><%= well.d %></td>
   </tr>
   <tr>
-    <td><%= link_to 'Show', well %></td>
+    <td><%= well.c unless well.c.nil? %></td>
+  </tr>
+  <tr>
+    <td><%= link_to 'Show', well.i %></td>
   </tr>
 <% end %>
 </table>

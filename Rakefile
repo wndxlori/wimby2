@@ -5,3 +5,5 @@
 require File.expand_path('../config/application', __FILE__)
 
 Wimby2::Application.load_tasks
+
+#Rake::Task["db:schema:dump"].clear

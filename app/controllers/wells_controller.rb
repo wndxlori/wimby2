@@ -7,7 +7,10 @@ class WellsController < ApplicationController
   # GET /wells
   # GET /wells.json
   def index
-    @wells = Well.all
+    regions = {"1" => {:n => "60.0", :s =>"49.0", :e =>"-80.0", :w =>"-125.0"}}
+
+    @wells = Well.find_for_web_map({:regions => regions})
+#    @wells = Well.find_for_web_map({:regions => regions, :clustered => "true", :scale => {:h => '2883', :v => '2195'}})
 
     respond_to do |format|
       format.html # index.html.erb

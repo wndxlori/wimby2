@@ -1,4 +1,4 @@
-class BusinessAssociate < WimbyBase
+class BusinessAssociate < ActiveRecord::Base
   set_table_name :business_associate
   set_primary_key :business_associate
   

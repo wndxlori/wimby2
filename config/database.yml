@@ -1,6 +1,15 @@
 development:
-  adapter: oracle_enhanced
-  database: xe
-  username: ihstest
-  password: ihs123
+  adapter: postgresql
+  encoding: unicode
+  database: wimby2_dev
+  pool: 5
+  username: wimby2
+  password:
 
+test:
+  adapter: postgresql
+  encoding: unicode
+  database: wimby2_test
+  pool: 5
+  username: wimby2
+  password:
