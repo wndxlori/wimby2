@@ -1,0 +1,96 @@
+// Use MarkerClusterer for zoom levels with clustering then change to
+// MarkerManager for level 0 when there is no clustering but potentially
+//lots of wells
+
+var WebMapMarkerLayer = function () {
+	//First part of inheritance
+    WebMapLayer.apply(this);
+    this.data_url = "/wells/";
+    this.detail_url = "/wells/";
+};
+WebMapMarkerLayer.prototype = new WebMapLayer();
+
+WebMapMarkerLayer.prototype.init = function() {
+    WebMapLayer.prototype.init.call(this);
+
+    this.initMarkerIcons();
+    var township = WebMapHelper.zoomForUnit('township');
+    var baseline = this.firstZoom();
+
+    this.levels = [ new WebMapMarkerLevel(this, township+2, false),  //all, no clustering
+                    new WebMapMarkerLevel(this, township,   true ),
+                    new WebMapMarkerLevel(this, baseline,   true ),
+                    new WebMapMarkerLevel(this, 4, true)
+                  ];
+}
+
+WebMapMarkerLayer.prototype.firstZoom = function() {
+  return WebMapHelper.zoomForUnit('baseline');
+};
+
+WebMapMarkerLayer.prototype.createItem = function(level, item) {
+    var marker;
+    if (item.c>1) {
+        marker = new google.maps.Marker({
+            position: new google.maps.LatLng(item.n, item.w),
+            title:    'Cluster: ' + item.c
+        });
+        marker.count = item.c;
+    } else {
+        marker = new google.maps.Marker({
+          position: new google.maps.LatLng(item.n, item.w),
+          title:    item.d,
+          icon:     this.marker_icons.marker,
+          shadow:   this.marker_icons.shadow
+        });
+        marker.id = item.i;
+        marker.count = 1;
+        var layer = this;
+        google.maps.event.addListener(marker, 'click', function() {
+           layer.clickEvent(marker);
+        } );
+    }
+    return marker;
+};
+
+WebMapMarkerLayer.prototype.getItemBounds = function(item) {
+    var p = item.getPosition();
+    return { lat: p.lat(), lng:p.lng() };
+}
+
+WebMapMarkerLayer.prototype.highlight = function(item) {
+    if (!this.selected_original_zindex)
+        this.selected_original_zindex = item.getZIndex();
+    item.setZIndex(google.maps.Marker.MAX_ZINDEX+1);
+    item.setShadow(this.marker_icons.highlight);
+};
+
+WebMapMarkerLayer.prototype.unhighlight = function(item) {
+    item.setShadow(this.marker_icons.shadow);
+    item.setZIndex(this.selected_original_zindex);
+};
+
+WebMapMarkerLayer.prototype.initMarkerIcons = function() {
+    this.marker_icons = {};
+
+    this.marker_icons.marker = new google.maps.MarkerImage("<%= asset_path 'abandoned.gif' %>");
+
+    this.marker_icons.shadow = new google.maps.MarkerImage("<%= asset_path 'shadow.png' %>",
+                                                            new google.maps.Size(38.0, 34.0),
+                                                            new google.maps.Point(0, 0),
+                                                            new google.maps.Point(11.0, 34.0) );
+    this.marker_icons.highlight = new google.maps.MarkerImage("<%= asset_path 'shadow.png' %>",
+                                                            new google.maps.Size(38.0, 34.0),
+                                                            new google.maps.Point(0, 0),
+                                                            new google.maps.Point(11.0, 34.0) );
+    this.cluster_styles = [
+        { url: "<%= asset_path 'clusterer/lg0.png' %>", height: 38, width: 38, textColor: '#000000' },
+        { url: "<%= asset_path 'clusterer/lg1.png' %>", height: 46, width: 46, textColor: '#000000' },
+        { url: "<%= asset_path 'clusterer/lg2.png' %>", height: 54, width: 54, textColor: '#000000' }
+    ];
+};
+
+WebMapMarkerLayer.prototype.loadQueryParams = function(level) {
+    return { clustered:level.clustered };
+};
+

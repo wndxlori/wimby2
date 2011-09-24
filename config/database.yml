@@ -2,7 +2,7 @@ development:
   adapter: postgresql
   encoding: unicode
   database: wimby2_dev
-  pool: 5
+  pool: 15
   username: wimby2
   password:
 
@@ -10,6 +10,6 @@ test:
   adapter: postgresql
   encoding: unicode
   database: wimby2_test
-  pool: 5
+  pool: 15
   username: wimby2
   password:
