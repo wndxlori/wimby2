@@ -189,11 +189,13 @@ WebMapMarkerLevel.prototype.init = function() {
 
     var level = this;
     if (level.clustered) {
+        console.log('using clusterer');
         //Use a clusterer manager
         level.manager = new MarkerClusterer(WebMap.map, null, {averageCenter:true, styles:level.layer.cluster_styles } );
         level.load();
 
     } else {
+        console.log('using manager');
         //Use the marker manager for most zoomed in level
         level.manager = new MarkerManager(WebMap.map);
         google.maps.event.addListenerOnce(level.manager, 'loaded', function(){

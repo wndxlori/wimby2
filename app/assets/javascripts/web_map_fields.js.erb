@@ -1,0 +1,140 @@
+//
+// Should contain WebMapMarkerLayer, a prototype that will be reused for marker types like
+// areas, wells and facilities
+//
+// For wells, the first cutoff will be zoom level 6.  At that level, we can display clusters
+// of wells (by area).  At 10 or 11, we can load and display the wells.  if they click on a area
+// marker, we can zoom to the area bounds, and load wells from there.
+//
+//  Progress bar for loading?
+//  http://www.basicslabs.com/Projects/progressBar/
+//
+//  Bind events for:
+//  bounds_changed ?
+//  zoom_changed ?  - maybe not, manager/clusterer handles zoom?
+//
+
+var WebMapFields = {
+    is_enabled : false,
+    loaded :false,
+    initializing : false,
+    manager : null,
+    minZoom : 4,
+    maxZoom : 8,
+    markers :[],
+    marker_icons : {},
+    data_url : '/fields/',
+    marker_zoom: 9,
+    cluster_styles : [
+        { url: "<%= asset_path 'clusterer/lb0.png' %>", height: 38, width: 38, textColor: '#000000' },
+        { url: "<%= asset_path 'clusterer/lb1.png' %>", height: 46, width: 46, textColor: '#000000' },
+        { url: "<%= asset_path 'clusterer/lb2.png' %>", height: 54, width: 54, textColor: '#000000' }
+    ],
+
+    enabled : function(is_enabled) {
+        if ( WebMapFields.is_enabled = is_enabled ) {
+            if (!(WebMapFields.initializing || WebMapFields.loaded )) {
+                WebMapFields.init();
+            } else {
+                WebMapFields.manager.addMarkers(WebMapFields.markers);
+                WebMapFields.manager.set('shown', true);
+            }
+        } else {
+            if ( WebMapFields.loaded ) {
+                WebMapFields.manager.clearMarkers();
+                WebMapFields.manager.set('shown', false);
+            }
+        }
+    },
+
+    init : function() {
+        WebMapFields.initializing = true;
+        WebMapFields.maxZoom = WebMap.layers.well.firstZoom() - 1;
+        WebMapFields.init_marker_icons();
+        var loadListener;
+        // add idle event handler to load only when required
+        loadListener = google.maps.event.addListenerOnce(WebMap.map, 'idle', function() {
+            if (WebMapFields.loaded || !WebMapFields.in_zoom() ) return;
+            WebMapFields.load();
+        });
+    },
+
+    // Loads the markers for this layer. Hands off to the Marker Manager
+    load : function() {
+        if ( this.loaded ) return;
+        var layer = this;
+        $.getJSON(layer.data_url, function(data) {
+            layer.add_list(layer, data);
+            layer.init_manager(layer);
+            //$('#number_of_markers').append(layer.markers.length);
+        } );
+    },
+
+    // Creates a marker for the item, assigning an appropriate click event
+    add : function(layer, item) {
+      var marker = new google.maps.Marker({
+          position: new google.maps.LatLng(item.lt, item.lg),
+          icon: layer.marker_icons['FIELD'],
+          shadow: layer.marker_icons['shadow'],
+          title:item.nm
+      });
+      google.maps.event.addListener(marker, 'click', function() {layer.click(marker); } );
+      layer.markers.push(marker);
+    },
+
+    add_list : function(layer, list) {
+        $.each(list, function(index, item) { layer.add(layer, item); } );
+        layer.loaded = true;
+        layer.initializing = false;
+    },
+
+    init_manager : function( layer ) {
+        var opts = {maxZoom:layer.maxZoom-1, styles: layer.cluster_styles};
+        layer.manager = new MarkerClusterer(WebMap.map, layer.markers, opts);
+        layer.manager.show();
+        layer.manager.set('shown', true);
+        google.maps.event.addListener(WebMap.map, 'idle', function() { layer.zoom(layer); });
+    },
+
+    marker_icon : function( item ) {
+       return WebMapFields.marker_icons[item.area_type];
+    },
+
+    in_zoom : function() {
+        var zoom = WebMap.map.getZoom();
+        return (zoom >= this.minZoom && zoom <= this.maxZoom);
+    },
+
+    zoom : function(layer) {
+        if (layer.is_enabled) {
+            if ( layer.in_zoom() ) {
+                if (layer.manager.get('shown')) return;
+                layer.manager.addMarkers(layer.markers);
+                layer.manager.set('shown', true);
+            } else {
+                layer.manager.clearMarkers();
+                layer.manager.set('shown', false);
+            }
+        }
+    },
+
+    click : function(marker) {
+        var click_map = marker.getMap();
+        click_map.setZoom(WebMapFields.marker_zoom);
+        WebMap.map.panTo(marker.getPosition());
+    },
+
+    init_marker_icons : function() {
+        this.marker_icons['FIELD'] = new google.maps.MarkerImage('/images/plotsymbols/blueF.png',
+                new google.maps.Size(27,27),
+                new google.maps.Point(0,0),
+                new google.maps.Point(14,27)
+                );
+        this.marker_icons['shadow'] = new google.maps.MarkerImage('/images/plotsymbols/land/shadow.png',
+                new google.maps.Size(45,27),
+                new google.maps.Point(0,0),
+                new google.maps.Point(14,27)
+                );
+    }
+};
+

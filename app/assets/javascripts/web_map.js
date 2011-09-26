@@ -135,6 +135,7 @@ var WebMap = {
 
         this.layers.well = new WebMapMarkerLayer();
         this.layers.well.enabled(true);
+        WebMapFields.enabled(true);
     },
 
     setMapDimensions : function () {
