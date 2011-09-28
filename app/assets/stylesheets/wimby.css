@@ -18,6 +18,8 @@ root {
 html, body, #map {width:100%;height:100%;margin:0;padding:0}
 #map {height: 100%; width: 100%; position: relative; background-color: rgb(229, 227, 223); overflow: hidden; z-index: 0;}
 
+#busy_indicator {display: none; float:left;}
+
 /* ipad-y stuff */
 .toolbar {background: url(toolbar.png) #6d84a2 repeat-x; border-bottom: 1px solid #2d3642;height: 43px;font-family:Helvetica;}
 .button {

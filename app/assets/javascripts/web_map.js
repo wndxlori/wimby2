@@ -134,6 +134,7 @@ var WebMap = {
         $('#Start').bind('click', this.mapReset);
 
         this.layers.well = new WebMapMarkerLayer();
+        this.initBusyIndicator();
         this.layers.well.enabled(true);
         WebMapFields.enabled(true);
     },
