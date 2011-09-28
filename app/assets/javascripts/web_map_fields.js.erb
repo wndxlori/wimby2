@@ -125,16 +125,15 @@ var WebMapFields = {
     },
 
     init_marker_icons : function() {
-        this.marker_icons['FIELD'] = new google.maps.MarkerImage('/images/plotsymbols/blueF.png',
+        this.marker_icons['FIELD'] = new google.maps.MarkerImage("<%= asset_path 'blueF.png' %>",
                 new google.maps.Size(27,27),
                 new google.maps.Point(0,0),
                 new google.maps.Point(14,27)
                 );
-        this.marker_icons['shadow'] = new google.maps.MarkerImage('/images/plotsymbols/land/shadow.png',
-                new google.maps.Size(45,27),
-                new google.maps.Point(0,0),
-                new google.maps.Point(14,27)
-                );
+        this.marker_icons.shadow = new google.maps.MarkerImage("<%= asset_path 'shadow.png' %>",
+                                                                new google.maps.Size(38.0, 34.0),
+                                                                new google.maps.Point(0, 0),
+                                                                new google.maps.Point(11.0, 34.0) );
     }
 };
 
