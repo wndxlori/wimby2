@@ -21,7 +21,7 @@ class Well < ActiveRecord::Base
     ranges = regions.collect { |i,r| "(well_node.latitude between #{r[:s].to_f} AND #{r[:n].to_f} AND well_node.longitude between #{r[:w].to_f} AND #{r[:e].to_f})" }
 
     if clustered
-      Well.find_for_web_map_clustered(ranges, options[:scale])
+      Well.find_for_web_map_clustered(regions.values, ranges, options[:scale])
     else
       Well.find_for_web_map_bounded(ranges)
     end
@@ -38,9 +38,16 @@ class Well < ActiveRecord::Base
              :conditions => "(#{(ranges * ' OR ' )})" ) # AND (#{ABANDONED_WELL_CONDITION})" )
   end
 
-  def self.find_for_web_map_clustered(ranges, scale)
-    tiles_v = (scale[:v].to_f/25).ceil
-    tiles_h = (scale[:h].to_f/25).ceil
+  def self.find_for_web_map_clustered(regions, ranges, scale)
+    ntiles_lat = (scale[:v].to_f/25).ceil
+    ntiles_lng = (scale[:h].to_f/25).ceil
+
+    minlat = regions.collect {|a| a[:s].to_f }.min
+    maxlat = regions.collect {|a| a[:n].to_f }.max
+    delta_lat = (maxlat-minlat)/ntiles_lat
+    minlng = regions.collect {|a| a[:w].to_f }.min
+    maxlng = regions.collect {|a| a[:e].to_f }.max
+    delta_lng = (maxlng-minlng)/ntiles_lng
 
     wis_sql = %[
       (select #{SELECTS}
@@ -62,8 +69,8 @@ class Well < ActiveRecord::Base
           (select avg(longitude) as longitude, avg(latitude) as latitude, min(uwi) as uwi, count(*) as count
            from (
               select well_node.uwi, longitude, latitude,
-                     ntile(#{tiles_v}) over (order by latitude asc) as a,
-                     ntile(#{tiles_h}) over (order by longitude asc) as b
+                     round((latitude - #{minlat})/ #{delta_lat} ) as a,
+                     round((longitude - (#{minlng}))/ #{delta_lng} ) as b
               from well_node well_node inner join (#{wis_sql}) wis on wis.i=well_node.uwi
               where node_position='S'
                 and (#{ranges * ' OR ' })
