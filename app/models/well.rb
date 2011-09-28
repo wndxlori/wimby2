@@ -43,10 +43,10 @@ class Well < ActiveRecord::Base
     tiles_h = (scale[:h].to_f/25).ceil
 
     wis_sql = %[
-      select #{SELECTS}
+      (select #{SELECTS}
       from well
       join business_associate on well.operator = business_associate.business_associate
-      join r_well_status on well.current_status = r_well_status.status
+      join r_well_status on well.current_status = r_well_status.status)
     ]
 #    where #{ABANDONED_WELL_CONDITION}
 
@@ -64,15 +64,15 @@ class Well < ActiveRecord::Base
               select well_node.uwi, longitude, latitude,
                      ntile(#{tiles_v}) over (order by latitude asc) a,
                      ntile(#{tiles_h}) over (order by longitude asc) b
-              from well_node well_node inner join wis on wis.i=well_node.uwi
+              from well_node well_node inner join (#{wis_sql}) wis on wis.i=well_node.uwi
               where node_position='S'
                 and (#{ranges * ' OR ' })
              ) as f1 group by a, b
            ) as f
     ]
-    sql = "with wis as (#{wis_sql}) " +
-          base_sql +
-          'inner join wis on wis.i=f.uwi'
+#    sql = "with wis as (#{wis_sql}) " +
+    sql = base_sql +
+          "inner join (#{wis_sql}) wis on wis.i=f.uwi"
     self.find_by_sql( sql )
   end
 
