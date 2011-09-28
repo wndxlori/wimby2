@@ -6,10 +6,10 @@ development:
   username: wimby2
   password:
 
-test:
+production:
   adapter: postgresql
   encoding: unicode
-  database: wimby2_test
+  database: wimby2_dev
   pool: 15
   username: wimby2
   password:
