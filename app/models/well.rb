@@ -52,18 +52,18 @@ class Well < ActiveRecord::Base
 
     base_sql = %[
         select
-               (case count when 1 then wis.i else '' end) i,
-               (case count when 1 then wis.o else '' end) o,
-               (case count when 1 then wis.s else '' end) s,
-               (case count when 1 then wis.status_date else CURRENT_TIMESTAMP end) status_date,
-               (case count when 1 then wis.d else '' end) d,
-               longitude w, latitude n, count c
+               (case count when 1 then wis.i else '' end) as i,
+               (case count when 1 then wis.o else '' end) as o,
+               (case count when 1 then wis.s else '' end) as s,
+               (case count when 1 then wis.status_date else CURRENT_TIMESTAMP end) as status_date,
+               (case count when 1 then wis.d else '' end) as d,
+               longitude as w, latitude as n, count as c
         from
-          (select avg(longitude) longitude, avg(latitude) latitude, min(uwi) uwi, count(*) count
+          (select avg(longitude) as longitude, avg(latitude) as latitude, min(uwi) as uwi, count(*) as count
            from (
               select well_node.uwi, longitude, latitude,
-                     ntile(#{tiles_v}) over (order by latitude asc) a,
-                     ntile(#{tiles_h}) over (order by longitude asc) b
+                     ntile(#{tiles_v}) over (order by latitude asc) as a,
+                     ntile(#{tiles_h}) over (order by longitude asc) as b
               from well_node well_node inner join (#{wis_sql}) wis on wis.i=well_node.uwi
               where node_position='S'
                 and (#{ranges * ' OR ' })
