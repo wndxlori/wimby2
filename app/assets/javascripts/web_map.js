@@ -123,6 +123,7 @@ var WebMap = {
         WebMap.map.overlayMapTypes.push(WebMap.dlsOverlay);
         WebMap.map.overlayMapTypes.push(WebMap.ntsOverlay);
 
+        $('#hb div.button').click( this.locateMyBackYard );
         $('#geolocInput').blur( this.enterMyBackYard );
         // Debug info
         GM.event.addListener(this.map, 'mousemove', function(event) {
@@ -195,6 +196,70 @@ var WebMap = {
             });
         }
     },
+
+    // Uses the mobile locate, then degrades to Google IP-based location
+    locateMyBackYard: function() {
+        $("div.toolfeedback").html("<img alt='Et-busy' class='busy' src='/images/et-busy.gif' />&nbsp;Looking for your current location, please wait");
+        if ( window.location.hash || window.location.search ) {
+                if ( window.location.hash && window.location.hash.length > 1 ) {
+                        var params = window.location.hash.substr(1).parseQueryString();
+                } else {
+                        var params = window.location.search.substr(1).parseQueryString();
+                }
+
+                if ( params.loc ) {
+                        var url = '?loc='+encodeURIComponent(params.loc);
+                        url += '&lat='+encodeURIComponent(params.lat);
+                        url += '&lng='+encodeURIComponent(params.lng);
+                        var lastHash = url;
+                        document.getElementById('geolocInput').value = params.loc;
+                        var pos = new google.maps.LatLng(params.lat, params.lng);
+//                        recenterMap(pos);
+//                        addMarker(pos);
+                        if ( params.x ) {
+                            WebMap.map.setOptions( { center:pos, zoom:13 } );
+                        }
+                        return;
+                }
+        }
+        if(navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                var pos = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
+                WebMap.map.setOptions( { center:pos, zoom:13 } );
+//                addMarker(pos);
+            });
+        } else {
+            if ( google.loader.ClientLocation ) {
+                var geoloc = new google.maps.LatLng(google.loader.ClientLocation.latitude, google.loader.ClientLocation.longitude);
+                var geoloc_str = google.loader.ClientLocation.address.city+", "+google.loader.ClientLocation.address.region+", "+google.loader.ClientLocation.address.country;
+                WebMap.map.setOptions( { center:geoloc, zoom:13 } );
+//                addMarker(geoloc);
+                var posStr = geoloc_str;
+                $('#geolocInput').val(posStr);
+            }
+        }
+    },
+    socialLink: function(linkto) {
+        var shareurl;
+        var url = "http://wimby.etriever.com/";
+        if (marker) {
+            var location = marker.getPosition();
+            url += '?lat=' + location.lat();
+            url += '&lng=' + location.lng();
+            url += '&radius=' + radius;
+            url += '&bubbles=' + bubbles;
+        }
+        if (linkto == 'twitter') {
+            shareurl = 'http://www.facebook.com/sharer.php?u=';
+            shareurl += encodeURIComponent(url);
+            shareurl += encodeURIComponent("&t=Wells In Your Back Yard ");
+        } else if (linkto == 'facebook') {
+            shareurl = 'http://twitter.com/home?status=Wells In Your Back Yard ';
+            shareurl += encodeURIComponent(url);
+        }
+        window.location = shareurl;
+    },
+
 //    mapReset : function() {
 //        WebMap.map.fitBounds(new google.maps.LatLngBounds(new google.maps.LatLng(WebMap.searchBoundary.south, WebMap.searchBoundary.west),
 //                                               new google.maps.LatLng(WebMap.searchBoundary.north, WebMap.searchBoundary.east)));
