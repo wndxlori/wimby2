@@ -13,6 +13,8 @@ gem 'rails', '3.1.0'
 #end
 gem 'pg'
 
+gem 'newrelic_rpm'
+
 group :production do
 #  gem 'pg'
   gem 'dalli'
