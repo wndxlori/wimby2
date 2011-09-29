@@ -4,21 +4,21 @@ class Well < ActiveRecord::Base
 
   belongs_to :company, :class_name => 'BusinessAssociate', :foreign_key => :operator
   belongs_to :r_well_status, :foreign_key => :current_status
-  belongs_to :surface_location, :class_name => '::WellNode', :foreign_key => :surface_node_id
+#  belongs_to :surface_location, :class_name => '::WellNode', :foreign_key => :surface_node_id
 
   def status_age_index
     Date.today - self.status_date.to_date
   end
 
   ABANDONED_WELL_CONDITION = "well.plot_symbol in ( '348', '383', '396', '364', '392', '601') or well.current_status in ('22020000','23020000','23030000')"
-  SELECTS = "well.uwi as i, business_associate.ba_name as o, r_well_status.long_name as s, well.current_status_date as status_date, substr(well.x_uwi_sort,1,1) || well.x_uwi_display  as d "
+  SELECTS = "well.uwi as i, business_associate.ba_name as o, r_well_status.long_name as s, well.current_status_date as status_date, well.x_uwi_display  as d "
 
   def self.find_for_web_map(options)
     clustered = options[:clustered] == 'true'
     regions = options[:regions]
     raise "invalid regions" unless regions && regions.length>0
 
-    ranges = regions.collect { |i,r| "(well_node.latitude between #{r[:s].to_f} AND #{r[:n].to_f} AND well_node.longitude between #{r[:w].to_f} AND #{r[:e].to_f})" }
+    ranges = regions.collect { |i,r| "(well.surface_latitude between #{r[:s].to_f} AND #{r[:n].to_f} AND well.surface_longitude between #{r[:w].to_f} AND #{r[:e].to_f})" }
 
     if clustered
       Well.find_for_web_map_clustered(regions.values, ranges, options[:scale])
@@ -29,11 +29,11 @@ class Well < ActiveRecord::Base
 
   def self.find_for_web_map_bounded(ranges)
     selects = [SELECTS]
-    selects << 'well_node.longitude w'
-    selects << 'well_node.latitude n'
+    selects << 'well.surface_longitude w'
+    selects << 'well.surface_latitude n'
 
     Well.all(:select => 'DISTINCT ' + selects * ', ' ,
-             :joins => [:surface_location, :company, :r_well_status],
+             :joins => [:company, :r_well_status],
              :order => "status_date",
              :conditions => "(#{(ranges * ' OR ' )})" ) # AND (#{ABANDONED_WELL_CONDITION})" )
   end
@@ -68,12 +68,11 @@ class Well < ActiveRecord::Base
         from
           (select avg(longitude) as longitude, avg(latitude) as latitude, min(uwi) as uwi, count(*) as count
            from (
-              select well_node.uwi, longitude, latitude,
-                     round((latitude - #{minlat})/ #{delta_lat} ) as a,
-                     round((longitude - (#{minlng}))/ #{delta_lng} ) as b
-              from well_node well_node inner join (#{wis_sql}) wis on wis.i=well_node.uwi
-              where node_position='S'
-                and (#{ranges * ' OR ' })
+              select uwi, surface_longitude as longitude, surface_latitude as latitude,
+                     round((surface_latitude - #{minlat})/ #{delta_lat} ) as a,
+                     round((surface_longitude - (#{minlng}))/ #{delta_lng} ) as b
+              from well
+              where (#{ranges * ' OR ' })
              ) as f1 group by a, b
            ) as f
     ]
