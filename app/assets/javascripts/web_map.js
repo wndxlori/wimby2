@@ -123,10 +123,8 @@ var WebMap = {
         WebMap.map.overlayMapTypes.push(WebMap.dlsOverlay);
         WebMap.map.overlayMapTypes.push(WebMap.ntsOverlay);
 
+        $('#geolocInput').blur( this.enterMyBackYard );
         // Debug info
-        GM.event.addListener(this.map, 'zoom_changed', function() {
-            $('#zoom_level').html(this.getZoom());
-        });
         GM.event.addListener(this.map, 'mousemove', function(event) {
             $('#map_cursor').html(''+event.latLng);
         });
@@ -184,6 +182,19 @@ var WebMap = {
             .ajaxStop( function(){WebMap.endBusy();  } );
     },
 
+    enterMyBackYard: function() {
+        geocoder = new google.maps.Geocoder();
+        var address = $('#geolocInput').val();
+        if (geocoder) {
+            geocoder.geocode( {'address': address}, function(results, status) {
+                if (status == google.maps.GeocoderStatus.OK) {
+                    if (status != google.maps.GeocoderStatus.ZERO_RESULTS) {
+                        WebMap.map.setOptions( { center:results[0].geometry.location, zoom:13 } );
+                    }
+                }
+            });
+        }
+    },
 //    mapReset : function() {
 //        WebMap.map.fitBounds(new google.maps.LatLngBounds(new google.maps.LatLng(WebMap.searchBoundary.south, WebMap.searchBoundary.west),
 //                                               new google.maps.LatLng(WebMap.searchBoundary.north, WebMap.searchBoundary.east)));
