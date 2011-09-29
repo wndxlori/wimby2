@@ -29,8 +29,8 @@ class Well < ActiveRecord::Base
 
   def self.find_for_web_map_bounded(ranges)
     selects = [SELECTS]
-    selects << 'well.surface_longitude w'
-    selects << 'well.surface_latitude n'
+    selects << 'well.surface_longitude as w'
+    selects << 'well.surface_latitude as n'
 
     Well.all(:select => 'DISTINCT ' + selects * ', ' ,
              :joins => [:company, :r_well_status],
