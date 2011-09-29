@@ -39,6 +39,10 @@ WebMapMarkerLayer.prototype.createItem = function(level, item) {
         marker = new google.maps.Marker({
           position: new google.maps.LatLng(item.n, item.w),
           title:    item.d,
+          name:     item.u,
+          operator: item.o,
+          status:   item.s,
+          sdate:    item.status_date,
           icon:     this.marker_icons.marker,
           shadow:   this.marker_icons.shadow
         });
@@ -92,4 +96,13 @@ WebMapMarkerLayer.prototype.initMarkerIcons = function() {
 WebMapMarkerLayer.prototype.loadQueryParams = function(level) {
     return { clustered:level.clustered };
 };
+
+WebMapMarkerLayer.prototype.handleClickEvent = function(item, id) {
+    $('#panel h2').html(item.name);
+    $('#panel li.uwi').html("<label>UWI</label>" + item.title);
+    $('#panel li.operator').html("<label>Operator</label>" + item.operator);
+    $('#panel li.status').html("<label>Status</label>" + item.status);
+    $('#panel li.date').html("<label>Status Date</label>" + item.sdate);
+    WebMapLayer.prototype.handleClickEvent.call(this, arguments);
+}
 

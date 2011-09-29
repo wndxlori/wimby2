@@ -11,7 +11,7 @@ class Well < ActiveRecord::Base
   end
 
   ABANDONED_WELL_CONDITION = "well.plot_symbol in ( '348', '383', '396', '364', '392', '601') or well.current_status in ('22020000','23020000','23030000')"
-  SELECTS = "well.uwi as i, business_associate.ba_name as o, r_well_status.long_name as s, well.current_status_date as status_date, well.x_uwi_display  as d "
+  SELECTS = "well.uwi as i, business_associate.ba_name as o, r_well_status.long_name as s, well.current_status_date as status_date, well.x_uwi_display  as d, well.well_name as u"
 
   def self.find_for_web_map(options)
     clustered = options[:clustered] == 'true'
@@ -64,6 +64,7 @@ class Well < ActiveRecord::Base
                (case count when 1 then wis.s else '' end) as s,
                (case count when 1 then wis.status_date else CURRENT_TIMESTAMP end) as status_date,
                (case count when 1 then wis.d else '' end) as d,
+               (case count when 1 then wis.u else '' end) as u,
                longitude as w, latitude as n, count as c
         from
           (select avg(longitude) as longitude, avg(latitude) as latitude, min(uwi) as uwi, count(*) as count

@@ -124,7 +124,10 @@ WebMapLayer.prototype.clickEvent = function(item) {
 };
 
 WebMapLayer.prototype.handleClickEvent = function(item, id) {
-    WebMap.loadDetails(this.detail_url, this.clickEventParams(item) );
+    $("#panel").animate({ right: WebMap.sipPos }, 600, 'linear', function() {
+        if(WebMap.sipPos == 0) { WebMap.sipPos = -300; }
+        else { WebMap.sipPos = 0; }
+    });
 }
 
 WebMapLayer.prototype.setFocusedItem = function(id) {

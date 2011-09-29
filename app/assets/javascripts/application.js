@@ -10,4 +10,13 @@
 
 $(  function() {
     WebMap.initialize();
+    WebMap.sipPos = 0;
+    $("#panel-tab").click(function(e) {
+        e.preventDefault();
+        $("#panel").animate({ right: WebMap.sipPos }, 600, 'linear', function() {
+            if(WebMap.sipPos == 0) { WebMap.sipPos = -300; }
+            else { WebMap.sipPos = 0; }
+        });
+    });
+
 } );
