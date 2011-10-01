@@ -32,6 +32,7 @@ var WebMapFields = {
     ],
 
     enabled : function(is_enabled) {
+        this.maxZoom = WebMapHelper.zoomForUnit('baseline');
         if ( WebMapFields.is_enabled = is_enabled ) {
             if (!(WebMapFields.initializing || WebMapFields.loaded )) {
                 WebMapFields.init();
