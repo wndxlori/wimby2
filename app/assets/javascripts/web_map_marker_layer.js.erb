@@ -19,7 +19,7 @@ WebMapMarkerLayer.prototype.init = function() {
 
     this.levels = [ new WebMapMarkerLevel(this, township+2, false),  //all, no clustering
                     new WebMapMarkerLevel(this, township,   true ),
-                    new WebMapMarkerLevel(this, WebMapFields.marker_zoom+1,   true )
+                    new WebMapMarkerLevel(this, baseline,   true )
                   ];
 }
 
@@ -100,10 +100,10 @@ WebMapMarkerLayer.prototype.loadQueryParams = function(level) {
 WebMapMarkerLayer.prototype.handleClickEvent = function(item, id) {
     if (this.selected_id != id) {WebMapLayer.prototype.handleClickEvent.call(this, arguments);}
     $('#panel h2').html(item.name);
-    $('#panel li.uwi').html("<label>UWI</label>" + item.title);
-    $('#panel li.operator').html("<label>Operator</label>" + item.operator);
-    $('#panel li.status').html("<label>Status</label>" + item.status);
-    $('#panel li.date').html("<label>Status Date</label>" + item.sdate);
+    $('#panel li.uwi').html("<label>UWI</label><span>" + item.title + "</span>");
+    $('#panel li.operator').html("<label>Operator</label><span>" + item.operator + "</span>");
+    $('#panel li.status').html("<label>Status</label><span>" + item.status + "</span>");
+    $('#panel li.date').html("<label>Status Date</label><span>" + item.sdate + "</span>");
     this.setFocusedItem(id);
     WebMapLayer.prototype.handleClickEvent.call(this, arguments);
 }

@@ -149,3 +149,6 @@ img.busy {top: 5px;}
 #panel a { float:right; clear: left; }
 #panel img {display: block; margin: 15px auto 15px auto; }
 #panel h2 { font-size: large; font-family: Helvetica; }
+#panel li { list-style: none; }
+#panel li label { font-weight: bold; text-align: left;}
+#panel li span {text-align: right;}
