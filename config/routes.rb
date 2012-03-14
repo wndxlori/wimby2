@@ -1,4 +1,4 @@
-Wimby2::Application.routes.draw do
+Wimby::Application.routes.draw do
 
   resources :wells
   resources :fields
